@@ -1,6 +1,6 @@
-const mongoose = require("mongosse")
+const mongoose = require("mongoose")
 
-const { Schema } = mongosse
+const { Schema } = mongoose
 
 const serviceSchema = new Schema({
     name: {
@@ -24,12 +24,11 @@ const serviceSchema = new Schema({
         required: true
     },
     phoneNumber:{
-        number:String,
-        required: false
+        number:String
     }
 }, {timestramps: true }
 )
-const Service = mongoose.model("Accounts", serviceSchema)
+const Accounts = mongoose.model("Accounts", serviceSchema)
 module.exports = {
     Accounts,
     serviceSchema
