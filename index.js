@@ -1,21 +1,26 @@
 const express = require('express')
 const app = express()
 const port = process.env.PORT || 8080
-const cors = require('cors')
-const router = require('./routes/router.js')
+require('dotenv').config()
+const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
+const jwl = require('jsonwebtoken')
 
-
-app.use(cors())
 app.use(express.json())
-//mongoose conextion
-const conn = require('./db/conn')
-conn()
-app.use('/',router)
 
+app.get('/', (req,res)=> {
+    res.status(200).json({
+        msg: "jnx API"
+    })  
+})  
+const dbUser = process.env.DB_USER
+const dbPassword = process.env.DB_PASS
 
-app.listen(PORT => {
-console.log(`listening on ${port}`)
-})
+mongoose.connect(`mongodb+srv://jefreecs:${dbPassword}@cluster0.nncpcxu.mongodb.net/?retryWrites=true&w=majority`).then(()=>{
+    app.listen(8080)
+    console.log("connected in MongoDb")
+}).catch((error)=>{console.log(`Error:${error}`)})
 
+app.listen(8080)
 
 
