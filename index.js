@@ -9,7 +9,8 @@ const jwl = require('jsonwebtoken')
 app.use(express.json())
 
 //models
-
+const dbUser = process.env.DB_USER
+const dbPassword = process.env.DB_PASS
 const User = require('./models/User')
 
 
@@ -18,6 +19,8 @@ app.get('/', (req,res)=> {
         msg: "jnx API"
     })  
 })  
+
+//account register
 app.post('/auth/register', async (req,res)=> {
 
     const {name, email, password, confirmPassword} = req.body
@@ -56,8 +59,25 @@ app.post('/auth/register', async (req,res)=> {
         })
     }
 })
-const dbUser = process.env.DB_USER
-const dbPassword = process.env.DB_PASS
+//account login
+app.post('/auth/login', async(req,res)=>{
+    const {email, password} = req.body
+    const user = await User.findOne({email: email})
+    const checkPass = await bcrypt.compare(password, user.password)
+
+    if(!email || !password){
+        res.status(422).json({msg: "email or password are missing"})
+    }
+    if(!user){
+        res.status(404).json({mgs: "invalid email address"})
+    }
+    if(!checkPass){
+        res.status(422).json({msg:"invalid password"})
+    }
+
+
+})
+
 
 mongoose.connect(`mongodb+srv://${dbUser}:${dbPassword}@cluster0.nncpcxu.mongodb.net/?retryWrites=true&w=majority`).then(()=>{
     app.listen(8080)
