@@ -28,8 +28,33 @@ app.post('/auth/register', async (req,res)=> {
     if(password != confirmPassword){
         res.status(422).json({mgs: 'passwords are not matching'})
     }
-    else res.status(200).json({mgs: 'passed'})
 
+    const userExist = await User.findOne({email: email})
+
+    if(userExist){
+       res.status(422).json({msg:'email already used'}) 
+    }
+    
+    const salt = await bcrypt.genSalt(12)
+    const pwHash = await bcrypt.hash(password, salt)
+
+    const user = new User({
+        name,
+        email,
+        password: pwHash,
+    })
+
+    try{
+        await user.save()
+
+        res.status(201).json({mgs: "account created successfully"})
+    }
+    catch(error){
+        console.log(error)
+        res.status(500).json({
+            mgs: 'Have not created account :/'
+        })
+    }
 })
 const dbUser = process.env.DB_USER
 const dbPassword = process.env.DB_PASS
