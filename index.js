@@ -4,7 +4,7 @@ const port = process.env.PORT || 8080
 require('dotenv').config()
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
-const jwl = require('jsonwebtoken')
+const jwt = require('jsonwebtoken')
 
 app.use(express.json())
 
@@ -63,7 +63,6 @@ app.post('/auth/register', async (req,res)=> {
 app.post('/auth/login', async(req,res)=>{
     const {email, password} = req.body
     const user = await User.findOne({email: email})
-    const checkPass = await bcrypt.compare(password, user.password)
 
     if(!email || !password){
         res.status(422).json({msg: "email or password are missing"})
@@ -71,9 +70,20 @@ app.post('/auth/login', async(req,res)=>{
     if(!user){
         res.status(404).json({mgs: "invalid email address"})
     }
+    const checkPass = await bcrypt.compare(password, user.password)
     if(!checkPass){
         res.status(422).json({msg:"invalid password"})
     }
+
+    try{
+        const secret = process.env.SECRET
+        const token = jwt.sign({
+            id: user._id
+        },
+        secret)
+        res.status(200).json({msg:"auth sucess", token})
+    }
+    catch(error){console.log(`error:${error}`)}
 
 
 })
