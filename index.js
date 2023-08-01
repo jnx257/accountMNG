@@ -20,6 +20,39 @@ app.get('/', (req,res)=> {
     })  
 })  
 
+
+app.get("/user/:id",checkToken, async(req,res) =>{
+    const id = req.params.id
+
+    const user = await User.findById(id, "-password")
+
+    if (!user){
+        res.status(404).json({msg: 'User Not Found'})
+    }
+    
+    res.status(200).json({user})
+})
+
+function checkToken (req, res, next){
+    const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+    
+    if(!token){
+        res.status(401).json({msg: "Access Denied" })
+    }
+
+    try{
+        const secret = process.env.SECRET
+        jwt.verify(token, secret)
+        next()
+
+    }
+    catch(error){
+        res.status(400).json({msg: 'Access Denied'})
+        console.log(`error:${error}`)
+    } 
+}
+
 //account register
 app.post('/auth/register', async (req,res)=> {
 
@@ -35,7 +68,7 @@ app.post('/auth/register', async (req,res)=> {
     const userExist = await User.findOne({email: email})
 
     if(userExist){
-       res.status(422).json({msg:'email already used'}) 
+        res.status(422).json({msg:'email already used'}) 
     }
     
     const salt = await bcrypt.genSalt(12)
