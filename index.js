@@ -5,8 +5,9 @@ require('dotenv').config()
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-
+const cors = require('cors')
 app.use(express.json())
+app.use(cors())
 
 //models
 const dbUser = process.env.DB_USER
@@ -96,12 +97,13 @@ app.post('/auth/register', async (req,res)=> {
 app.post('/auth/login', async(req,res)=>{
     const {email, password} = req.body
     const user = await User.findOne({email: email})
+    console.log(req.body)
 
     if(!email || !password){
-        res.status(422).json({msg: "email or password are missing"})
+        return res.status(422).json({msg: "email or password are missing"})
     }
     if(!user){
-        res.status(404).json({mgs: "invalid email address"})
+        return res.status(404).json({mgs: "invalid email address"})
     }
     const checkPass = await bcrypt.compare(password, user.password)
     if(!checkPass){
