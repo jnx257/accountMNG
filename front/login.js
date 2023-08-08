@@ -10,7 +10,10 @@ async function loginDB() {
     "Content-Type": "application/json",
   }})
   .then((response)=> response.json)
-  .then(data => console.log("login auth", data))
+  .then(data => {console.log("login auth", data)
+  const loginPopup = document.querySelector('.PopUp')
+  loginPopup.style.display = 'block';
+})
   .catch((error)=> console.log(error))
 }
 
