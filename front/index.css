@@ -1,5 +1,8 @@
 body{
-  background-image: "./src/images/11a7e38f3855ae3e78f8b8ab737f8c57.jpg";
+  background-image: "/src/images/11a7e38f3855ae3e78f8b8ab737f8c57.jpg";
+}
+.loginTab h1 {
+  text-align: center;
 }
 .loginTab {
   margin: auto;
@@ -13,8 +16,13 @@ body{
 
 #loginButton {
   text-align: center;
+  justify-content: center;  
+  margin-left: 10%;
+}
+#registerButton {
+  text-align: center;
   justify-content: center;
-  margin-left: 45%;
+  margin-left: 10%;
 }
 .PopUp {
   display: none;
@@ -28,7 +36,7 @@ body{
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
 }
 .button{
-margin-top:15px;
-margin-left:25px;
-border-radius: 1px 1px solid red;
+  margin-left: 10%;
+  margin-top:15px;
+  border-radius: 1px 1px solid red;
 }

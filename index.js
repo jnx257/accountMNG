@@ -55,16 +55,16 @@ app.post("/auth/register", async (req, res) => {
   const { name, email, password, confirmPassword } = req.body;
 
   if (!name || !email || !password || !confirmPassword) {
-    res.status(422).json({ mgs: "Some fields are missing" });
+    res.status(400).json({ mgs: "Some fields are missing" });
   }
   if (password != confirmPassword) {
-    res.status(422).json({ mgs: "passwords are not matching" });
+    res.status(400).json({ msg: "passwords are not matching" });
   }
 
   const userExist = await User.findOne({ email: email });
 
   if (userExist) {
-    res.status(422).json({ msg: "email already used" });
+    res.status(400).json({ msg: "email already used" });
   }
 
   const salt = await bcrypt.genSalt(12);
@@ -79,7 +79,7 @@ app.post("/auth/register", async (req, res) => {
   try {
     await user.save();
 
-    res.status(201).json({ mgs: "account created successfully" });
+    res.status(201).json({ msg: "account created successfully" });
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -94,14 +94,14 @@ app.post("/auth/login", async (req, res) => {
   console.log(req.body);
 
   if (!email || !password) {
-    return res.status(422).json({ msg: "email or password are missing" });
+    return res.status(400).json({ msg: "email or password are missing" });
   }
   if (!user) {
     return res.status(404).json({ mgs: "invalid email address" });
   }
   const checkPass = await bcrypt.compare(password, user.password);
   if (!checkPass) {
-    res.status(422).json({ msg: "invalid password" });
+    res.status(400).json({ msg: "invalid password" });
   }
 
   try {
